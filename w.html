@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftMC Store | Claim Your Place</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        cyan: {
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #0a0f14;
+            background-image: linear-gradient(to bottom, rgba(10, 15, 20, 0.85), rgba(6, 15, 25, 0.98)), url('https://images.unsplash.com/photo-1622281834944-bd380134b21e?q=80&w=2560&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgba(6, 182, 212, 0.3); box-shadow: 0 0 15px rgba(6, 182, 212, 0.1); }
+            50% { border-color: rgba(6, 182, 212, 0.8); box-shadow: 0 0 25px rgba(6, 182, 212, 0.3); }
+        }
+        .animate-pulse-border {
+            animation: pulse-border 3s infinite;
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.15);
+        }
+        
+        .glass-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(6, 15, 25, 0.95));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(6, 182, 212, 0.4);
+            box-shadow: 0 15px 35px -10px rgba(6, 182, 212, 0.25);
+        }
+
+        /* Buttons */
+        .btn-purple {
+            background: linear-gradient(135deg, #a855f7, #7e22ce);
+            box-shadow: 0 4px 15px rgba(126, 34, 206, 0.4);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(216, 180, 254, 0.2);
+        }
+        
+        .btn-purple:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(126, 34, 206, 0.6);
+            background: linear-gradient(135deg, #b165f8, #8b31db);
+        }
+
+        /* Utilities */
+        .text-glow {
+            text-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Image Fallback CSS */
+        .img-fallback-text {
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+            background-image: linear-gradient(to bottom right, #67e8f9, #3b82f6);
+            filter: drop-shadow(0 0 15px rgba(6,182,212,0.8));
+        }
+
+        .nav-link.active {
+            color: white;
+            background-color: rgba(8, 145, 178, 0.4);
+            border-color: rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Top Banner -->
+    <div class="bg-gradient-to-r from-cyan-700 via-cyan-500 to-cyan-700 text-white text-center py-2 px-4 text-xs md:text-sm font-black uppercase tracking-[0.2em] shadow-lg fixed top-0 w-full z-50">
+        <span class="animate-pulse inline-block mr-2 text-yellow-300"><i class="fa-solid fa-bolt"></i></span>
+        Lifesteal Season 2 launched now!
+        <span class="animate-pulse inline-block ml-2 text-yellow-300"><i class="fa-solid fa-bolt"></i></span>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full transition-all duration-300 z-40 top-8 glass-panel shadow-2xl py-3 border-b-cyan-500/20">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="cursor-pointer flex items-center group" onclick="navigate('home')">
+                <img src="Glossy Cyan SWIFT MC Logo.png" alt="SwiftMC Logo" 
+                     class="h-10 md:h-12 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_15px_rgba(6,182,212,0.8)]"
+                     onerror="this.style.display='none'; document.getElementById('nav-logo-fallback').style.display='block';">
+                <div id="nav-logo-fallback" class="img-fallback-text text-2xl hidden uppercase tracking-wider group-hover:scale-105 transition-transform">SWIFT MC</div>
+            </div>
+            
+            <!-- Desktop Links -->
+            <div class="hidden md:flex gap-2 items-center bg-slate-900/60 p-1.5 rounded-2xl border border-white/10 backdrop-blur-md shadow-inner">
+                <button onclick="navigate('home')" id="nav-home" class="nav-link px-5 py-2 rounded-xl font-black text-xs tracking-widest uppercase transition-all text-slate-400 hover:text-white hover:bg-white/5 border border-transparent active">Home</button>
+                <button onclick="navigate('ranks')" id="nav-ranks" class="nav-link px-5 py-2 rounded-xl font-black text-xs tracking-widest uppercase transition-all text-slate-400 hover:text-white hover:bg-white/5 border border-transparent">Ranks</button>
+                <button onclick="navigate('keys')" id="nav-keys" class="nav-link px-5 py-2 rounded-xl font-black text-xs tracking-widest uppercase transition-all text-slate-400 hover:text-white hover:bg-white/5 border border-transparent">Keys</button>
+                <button onclick="navigate('coins')" id="nav-coins" class="nav-link px-5 py-2 rounded-xl font-black text-xs tracking-widest uppercase transition-all text-slate-400 hover:text-white hover:bg-white/5 border border-transparent">Coins</button>
+            </div>
+
+            <!-- Discord Button -->
+            <a href="https://discord.com/channels/1537453209906323536/1561349610109280286/1561360111446925343" target="_blank" 
+               class="hidden md:flex bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] px-5 py-2.5 rounded-xl font-black uppercase tracking-wider text-sm transition-all items-center gap-2 border border-indigo-400/30">
+                <i class="fa-brands fa-discord text-lg"></i> Discord
+            </a>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden text-white p-2" onclick="toggleMobileMenu()">
+                <i id="mobile-menu-icon" class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full glass-panel border-t border-white/10 p-4 flex flex-col gap-2 shadow-2xl">
+            <button onclick="navigate('home')" class="p-4 text-center font-black uppercase text-white hover:bg-white/10 rounded-xl bg-white/5">Home</button>
+            <button onclick="navigate('ranks')" class="p-4 text-center font-black uppercase text-cyan-400 hover:bg-white/10 rounded-xl bg-white/5"><i class="fa-solid fa-shield-halved"></i> Browse Ranks</button>
+            <button onclick="navigate('keys')" class="p-4 text-center font-black uppercase text-cyan-400 hover:bg-white/10 rounded-xl bg-white/5"><i class="fa-solid fa-key"></i> Browse Keys</button>
+            <button onclick="navigate('coins')" class="p-4 text-center font-black uppercase text-cyan-400 hover:bg-white/10 rounded-xl bg-white/5"><i class="fa-solid fa-coins"></i> Browse Coins</button>
+            <div class="w-full h-px bg-white/10 my-2"></div>
+            <a href="https://discord.com/channels/1537453209906323536/1561349610109280286/1561360111446925343" target="_blank" class="p-4 text-center font-black uppercase text-white bg-indigo-600 rounded-xl flex items-center justify-center gap-2">
+                <i class="fa-brands fa-discord"></i> Support Ticket
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow pt-28 pb-10" id="main-content">
+        
+        <!-- ================= HOME VIEW ================= -->
+        <div id="view-home" class="animate-in fade-in duration-500">
+            <!-- Hero Section -->
+            <div class="relative pt-10 pb-16 px-4 text-center overflow-hidden flex flex-col items-center justify-center">
+                <img src="16d1b407d91b963d344be4b796e48eab.webp" alt="SwiftMC Banner" 
+                     class="w-full max-w-2xl mx-auto h-auto drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)] mb-8 animate-float object-contain rounded-3xl"
+                     onerror="this.style.display='none'; document.getElementById('hero-fallback').style.display='block';">
+                <div id="hero-fallback" class="hidden mb-8 w-full max-w-2xl mx-auto py-10 glass-panel rounded-3xl animate-float">
+                    <h2 class="img-fallback-text text-5xl md:text-7xl uppercase tracking-widest">SWIFT MC</h2>
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 uppercase tracking-tighter drop-shadow-2xl leading-[1.1]">
+                    Claim Your Place.<br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-[0_0_20px_rgba(6,182,212,0.4)]">Rule The Realm.</span>
+                </h1>
+                
+                <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-12 font-medium drop-shadow-md">
+                    Welcome to the official SwiftMC network store. Enhance your gameplay with premium ranks, exclusive crates, and powerful cosmetics. 
+                </p>
+
+                <!-- IP Box -->
+                <div class="glass-panel p-4 rounded-2xl inline-flex flex-col md:flex-row items-center gap-6 mx-auto animate-pulse-border group backdrop-blur-xl">
+                    <div class="flex items-center gap-4 px-2">
+                        <div class="relative flex h-4 w-4">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-4 w-4 bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)]"></span>
+                        </div>
+                        <div class="text-left">
+                            <div id="player-count" class="text-cyan-400 font-black text-2xl leading-none drop-shadow-[0_0_5px_rgba(6,182,212,0.5)]">...</div>
+                            <div class="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-1">Players Online</div>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden md:block w-px h-12 bg-white/10"></div>
+                    
+                    <div class="flex flex-col items-center md:items-start w-full md:w-auto">
+                        <button onclick="copyIP()" id="copy-btn" class="flex items-center justify-center md:justify-start gap-3 bg-black/40 hover:bg-cyan-950/60 border border-white/5 hover:border-cyan-400/50 rounded-xl px-5 py-3 transition-all duration-300 w-full">
+                            <span class="font-mono font-black text-white text-lg tracking-wider drop-shadow-md">play.swiftmc.fun</span>
+                            <i id="copy-icon" class="fa-regular fa-copy text-cyan-400 group-hover:scale-110 transition-transform drop-shadow-[0_0_5px_rgba(6,182,212,0.3)]"></i>
+                        </button>
+                        <div class="mt-2 text-[10px] text-slate-400 font-black uppercase tracking-widest text-center w-full">
+                            Bedrock Port: <span class="text-cyan-400">19132</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Direct Store Access -->
+            <div class="max-w-6xl mx-auto px-4 py-12">
+                <h2 class="text-2xl md:text-3xl font-black text-center text-white mb-10 uppercase tracking-[0.2em] flex items-center justify-center gap-4">
+                    <span class="h-px w-12 md:w-24 bg-cyan-500/50"></span>
+                    Direct Store Access
+                    <span class="h-px w-12 md:w-24 bg-cyan-500/50"></span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <button onclick="navigate('ranks')" class="glass-card p-8 rounded-3xl flex flex-col items-center gap-6 group hover:border-cyan-500/50">
+                        <div class="w-20 h-20 rounded-full bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+                            <i class="fa-solid fa-shield-halved text-4xl text-cyan-400 group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]"></i>
+                        </div>
+                        <span class="text-2xl font-black uppercase tracking-wider text-white">Browse Ranks</span>
+                    </button>
+                    <button onclick="navigate('keys')" class="glass-card p-8 rounded-3xl flex flex-col items-center gap-6 group hover:border-cyan-500/50">
+                        <div class="w-20 h-20 rounded-full bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+                            <i class="fa-solid fa-key text-4xl text-cyan-400 group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]"></i>
+                        </div>
+                        <span class="text-2xl font-black uppercase tracking-wider text-white">Browse Keys</span>
+                    </button>
+                    <button onclick="navigate('coins')" class="glass-card p-8 rounded-3xl flex flex-col items-center gap-6 group hover:border-cyan-500/50">
+                        <div class="w-20 h-20 rounded-full bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+                            <i class="fa-solid fa-coins text-4xl text-cyan-400 group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]"></i>
+                        </div>
+                        <span class="text-2xl font-black uppercase tracking-wider text-white">Browse Coins</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Game Modes -->
+            <div class="max-w-6xl mx-auto px-4 pb-24 pt-10">
+                <h2 class="text-2xl md:text-3xl font-black text-center text-white mb-12 uppercase tracking-[0.2em] flex items-center justify-center gap-4">
+                    <span class="h-px w-12 md:w-24 bg-cyan-500/50"></span>
+                    Select Game Mode
+                    <span class="h-px w-12 md:w-24 bg-cyan-500/50"></span>
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Lifesteal Card -->
+                    <div class="glass-card rounded-[2rem] overflow-hidden group border-cyan-900/40 cursor-pointer" onclick="navigate('ranks')">
+                        <div class="h-56 bg-slate-900 relative overflow-hidden flex flex-col items-center justify-center">
+                            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-900/40 via-slate-900 to-slate-950"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-red-600/10 rounded-full blur-[60px] group-hover:bg-red-500/20 transition-colors"></div>
+                            
+                            <span class="text-6xl mb-4 relative z-10 animate-float drop-shadow-2xl">❤️‍🔥</span>
+                            <h3 class="text-5xl font-black text-white uppercase tracking-widest drop-shadow-[0_4px_15px_rgba(0,0,0,0.9)] relative z-10">Lifesteal</h3>
+                        </div>
+                        <div class="p-10 text-center relative bg-slate-900/50 h-full flex flex-col justify-between">
+                            <p class="text-slate-300 mb-8 font-medium text-lg leading-relaxed">
+                                Kill players to steal their hearts. Lose all hearts and face the consequences. Dominate the server with exclusive ranks and crates.
+                            </p>
+                            <button class="bg-cyan-600 group-hover:bg-cyan-500 text-white px-8 py-4 rounded-xl font-black uppercase tracking-wider w-full flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(8,145,178,0.3)] group-hover:shadow-[0_0_30px_rgba(8,145,178,0.5)]">
+                                Enter Store <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Practice Card -->
+                    <div class="glass-card rounded-[2rem] overflow-hidden opacity-80 border-slate-700/50 relative">
+                        <div class="absolute inset-0 bg-slate-950/40 z-20 flex items-center justify-center backdrop-blur-[2px]">
+                             <div class="bg-purple-900/90 text-purple-200 px-6 py-2 rounded-full font-black tracking-[0.2em] uppercase border border-purple-500/50 shadow-[0_0_20px_rgba(168,85,247,0.4)] transform -rotate-12">
+                                 Coming Soon
+                             </div>
+                        </div>
+                        <div class="h-56 bg-slate-900 relative flex flex-col items-center justify-center border-b border-white/5 filter grayscale opacity-70">
+                            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-800 to-slate-950"></div>
+                            <span class="text-6xl mb-4 relative z-10">⚔️</span>
+                            <h3 class="text-5xl font-black text-slate-500 uppercase tracking-widest relative z-10">Practice PvP</h3>
+                        </div>
+                        <div class="p-10 text-center bg-slate-900/30 filter grayscale opacity-70 h-full flex flex-col justify-between">
+                            <p class="text-slate-500 mb-8 font-medium text-lg leading-relaxed">
+                                Hone your combat skills against the best. Ranked ladders, custom kits, and smooth mechanics. Store coming soon.
+                            </p>
+                            <button disabled class="bg-slate-800 border border-white/5 text-slate-500 px-8 py-4 rounded-xl font-black uppercase tracking-wider w-full cursor-not-allowed">
+                                Not Available Yet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= CATEGORY VIEWS ================= -->
+        
+        <!-- Ranks View -->
+        <div id="view-ranks" class="hidden animate-in fade-in duration-300 pt-10 pb-24 px-4 max-w-7xl mx-auto">
+            <div class="text-center mb-20 relative">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] -z-10 pointer-events-none"></div>
+                <div class="flex justify-center mb-6">
+                    <span class="text-7xl drop-shadow-[0_0_20px_rgba(6,182,212,0.4)] animate-float">🛡️</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6">Server Ranks</h1>
+                <p class="text-xl text-slate-300 max-w-2xl mx-auto font-medium">Unlock powerful commands, kits, and exclusive chat tags.</p>
+            </div>
+            <div id="grid-ranks" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center"></div>
+        </div>
+
+        <!-- Keys View -->
+        <div id="view-keys" class="hidden animate-in fade-in duration-300 pt-10 pb-24 px-4 max-w-7xl mx-auto">
+            <div class="text-center mb-20 relative">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] -z-10 pointer-events-none"></div>
+                <div class="flex justify-center mb-6">
+                    <span class="text-7xl drop-shadow-[0_0_20px_rgba(6,182,212,0.4)] animate-float">🗝️</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6">Crate Keys</h1>
+                <p class="text-xl text-slate-300 max-w-2xl mx-auto font-medium">Test your luck and win amazing rewards at spawn.</p>
+            </div>
+            <div id="grid-keys" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center"></div>
+        </div>
+
+        <!-- Coins View -->
+        <div id="view-coins" class="hidden animate-in fade-in duration-300 pt-10 pb-24 px-4 max-w-7xl mx-auto">
+            <div class="text-center mb-20 relative">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] -z-10 pointer-events-none"></div>
+                <div class="flex justify-center mb-6">
+                    <span class="text-7xl drop-shadow-[0_0_20px_rgba(6,182,212,0.4)] animate-float">🪙</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6">Server Coins</h1>
+                <p class="text-xl text-slate-300 max-w-2xl mx-auto font-medium">Boost your economy with instant coin injections.</p>
+            </div>
+            <div id="grid-coins" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center"></div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-cyan-900/40 border-b-0 border-x-0 pt-20 pb-10 mt-auto bg-slate-950/80 z-10 relative">
+        <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-12 mb-16">
+            <div class="col-span-2 pr-8">
+                <img src="Glossy Cyan SWIFT MC Logo.png" alt="SwiftMC Logo" 
+                     class="h-14 object-contain mb-6 drop-shadow-[0_0_10px_rgba(6,182,212,0.4)] opacity-80 hover:opacity-100 transition-opacity"
+                     onerror="this.style.display='none'; document.getElementById('footer-fallback').style.display='block';">
+                <div id="footer-fallback" class="hidden img-fallback-text text-3xl mb-4">SWIFT MC</div>
+                <p class="text-slate-400 text-sm leading-relaxed max-w-md font-medium">
+                    SwiftMC is a premium Minecraft network offering the ultimate Lifesteal experience. Join our community, forge your legacy, and rule the realm.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-white font-black uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-server text-cyan-400 drop-shadow-[0_0_5px_rgba(6,182,212,0.8)]"></i> Game Modes
+                </h4>
+                <div class="flex flex-col gap-4">
+                    <button onclick="navigate('ranks')" class="text-slate-400 hover:text-cyan-400 text-left text-sm uppercase tracking-wider font-bold transition-colors">Lifesteal SMP</button>
+                    <button class="text-slate-500 text-left text-sm uppercase tracking-wider font-bold cursor-not-allowed">Practice PvP (Soon)</button>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-white font-black uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping text-cyan-400 drop-shadow-[0_0_5px_rgba(6,182,212,0.8)]"></i> Direct Store
+                </h4>
+                <div class="flex flex-col gap-4">
+                    <button onclick="navigate('ranks')" class="text-slate-400 hover:text-cyan-400 text-left text-sm uppercase tracking-wider font-bold transition-colors">Buy Ranks</button>
+                    <button onclick="navigate('keys')" class="text-slate-400 hover:text-cyan-400 text-left text-sm uppercase tracking-wider font-bold transition-colors">Buy Crate Keys</button>
+                    <button onclick="navigate('coins')" class="text-slate-400 hover:text-cyan-400 text-left text-sm uppercase tracking-wider font-bold transition-colors">Buy Coins</button>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 pt-8 border-t border-white/10 text-center text-slate-500 text-xs font-black uppercase tracking-widest">
+            <p>© <span id="year"></span> SwiftMC Network. Not affiliated with Mojang AB.</p>
+        </div>
+    </footer>
+
+    <!-- Purchase Modal Overlay -->
+    <div id="purchase-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel p-1 rounded-[2rem] max-w-md w-full border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.1)] relative">
+            <div class="bg-slate-900/95 rounded-[1.8rem] p-8 relative overflow-hidden">
+                <div class="absolute -top-20 -right-20 w-40 h-40 bg-purple-600 rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+                <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-cyan-600 rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+                
+                <button onclick="closeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors bg-white/5 p-2 rounded-full hover:bg-white/10 z-20">
+                    <i class="fa-solid fa-xmark text-xl w-5 h-5 flex items-center justify-center"></i>
+                </button>
+                
+                <div class="text-center relative z-10 flex flex-col items-center">
+                    <div class="mb-6 relative">
+                        <div class="absolute inset-0 bg-cyan-500/20 blur-2xl rounded-full"></div>
+                        <span id="modal-emoji" class="text-7xl drop-shadow-2xl animate-float relative z-10" style="animation-duration: 3s;">📦</span>
+                    </div>
+                    
+                    <h3 class="text-3xl font-black text-white mb-2 uppercase tracking-wide">
+                        Buy <span id="modal-name">Item</span>
+                    </h3>
+                    
+                    <div class="flex items-center justify-center gap-3 mb-8">
+                        <span id="modal-inr" class="text-cyan-400 font-black text-2xl drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]">₹0</span>
+                        <span id="modal-usd" class="text-slate-500 font-bold text-lg">/ $0.00</span>
+                    </div>
+                    
+                    <div class="bg-slate-800/80 rounded-xl p-5 mb-8 border border-white/10 text-left backdrop-blur-sm shadow-inner">
+                        <p class="text-sm text-slate-300 leading-relaxed text-center font-medium">
+                            Purchases are handled manually by our team to ensure perfect delivery. Open a ticket in our Discord server and a staff member will get you set up immediately.
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-3 w-full">
+                        <a href="https://discord.com/channels/1537453209906323536/1561349610109280286/1561360111446925343" target="_blank" class="flex items-center justify-center gap-2 w-full btn-purple text-white py-4 rounded-xl font-black uppercase tracking-wider text-sm">
+                            <i class="fa-brands fa-discord"></i> Create Ticket
+                        </a>
+                        <button onclick="closeModal()" class="w-full py-4 rounded-xl font-bold text-slate-400 hover:bg-white/10 hover:text-white transition-colors uppercase tracking-wider text-sm border border-transparent hover:border-white/10">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // --- DATA ---
+        const products = {
+            ranks: [
+                { name: 'Elite Rank', priceINR: 200, priceUSD: 3.00, emoji: '🛡️', color: 'text-emerald-400' },
+                { name: 'Titan Rank', priceINR: 450, priceUSD: 6.00, emoji: '⚔️', color: 'text-orange-400' },
+                { name: 'Overlord Rank', priceINR: 800, priceUSD: 10.00, emoji: '👑', color: 'text-red-500' },
+                { name: 'Champion Rank', priceINR: 1300, priceUSD: 15.00, emoji: '🏆', color: 'text-fuchsia-400' },
+                { name: 'Supreme Rank', priceINR: 1800, priceUSD: 21.00, emoji: '💎', color: 'text-cyan-400' },
+                { name: 'Custom Rank', priceINR: 3500, priceUSD: 40.00, emoji: '✨', color: 'text-yellow-400' },
+            ],
+            keys: [
+                { name: 'Special Key ×1', priceINR: 50, priceUSD: 0.80, emoji: '🗝️', color: 'text-slate-300' },
+                { name: 'Legendary Key ×1', priceINR: 100, priceUSD: 1.50, emoji: '🔑', color: 'text-blue-400' },
+                { name: 'Apex Key ×1', priceINR: 180, priceUSD: 2.50, emoji: '🔥', color: 'text-orange-400' },
+                { name: 'Monthly Crate Key ×1', priceINR: 299, priceUSD: 3.50, emoji: '🌟', color: 'text-pink-400' },
+            ],
+            coins: [
+                { name: '1,000 Coins', priceINR: 300, priceUSD: 4.00, emoji: '🪙', color: 'text-amber-400' },
+                { name: '5,000 Coins', priceINR: 1500, priceUSD: 20.00, emoji: '💰', color: 'text-emerald-400' },
+                { name: '10,000 Coins', priceINR: 2500, priceUSD: 33.00, emoji: '🏦', color: 'text-yellow-300' },
+            ]
+        };
+
+        // --- RENDER CARDS ---
+        function createCardHTML(product) {
+            const delay = (Math.random() * 2).toFixed(2);
+            // Escape quotes for inline onclick handler
+            const productJSON = JSON.stringify(product).replace(/"/g, '&quot;');
+            
+            return `
+                <div class="glass-card rounded-3xl p-6 flex flex-col items-center text-center relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    
+                    <div class="mt-6 mb-8 relative">
+                        <div class="w-32 h-32 mx-auto rounded-full bg-slate-800/50 border border-white/5 flex items-center justify-center relative overflow-visible group-hover:border-cyan-500/30 transition-colors shadow-inner">
+                            <div class="absolute inset-0 bg-cyan-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <span class="text-6xl drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] animate-float relative z-10 transform group-hover:scale-110 transition-transform duration-500" style="animation-delay: ${delay}s;">
+                                ${product.emoji}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <h4 class="text-xl font-black uppercase tracking-wide mb-3 ${product.color} drop-shadow-md">
+                        ${product.name}
+                    </h4>
+                    
+                    <div class="mt-auto pt-6 w-full relative z-10 border-t border-white/5 group-hover:border-white/10 transition-colors">
+                        <div class="flex justify-center items-end gap-2 mb-5">
+                            <span class="text-3xl font-black text-white drop-shadow-md">₹${product.priceINR}</span>
+                            <span class="text-base font-bold text-slate-500 mb-1">/ $${product.priceUSD.toFixed(2)}</span>
+                        </div>
+                        
+                        <button onclick="openModal(${productJSON})" class="w-full btn-purple text-white py-3.5 rounded-xl font-black flex items-center justify-center gap-2 uppercase tracking-wider text-sm">
+                            <i class="fa-solid fa-cart-shopping"></i> Purchase
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize grids
+        document.getElementById('grid-ranks').innerHTML = products.ranks.map(createCardHTML).join('');
+        document.getElementById('grid-keys').innerHTML = products.keys.map(createCardHTML).join('');
+        document.getElementById('grid-coins').innerHTML = products.coins.map(createCardHTML).join('');
+
+        // --- ROUTING (Single Page App Logic) ---
+        const views = ['home', 'ranks', 'keys', 'coins'];
+        
+        function navigate(targetView) {
+            // Hide all views
+            views.forEach(view => {
+                document.getElementById(`view-${view}`).classList.add('hidden');
+                // Remove active styling from nav links
+                const navBtn = document.getElementById(`nav-${view}`);
+                if(navBtn) {
+                    navBtn.classList.remove('active', 'text-white', 'bg-cyan-600/40', 'border-cyan-500/30', 'shadow-[0_0_10px_rgba(6,182,212,0.3)]');
+                    navBtn.classList.add('text-slate-400');
+                }
+            });
+
+            // Show target view
+            document.getElementById(`view-${targetView}`).classList.remove('hidden');
+            
+            // Add active styling
+            const activeBtn = document.getElementById(`nav-${targetView}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-slate-400');
+                activeBtn.classList.add('active', 'text-white', 'bg-cyan-600/40', 'border-cyan-500/30', 'shadow-[0_0_10px_rgba(6,182,212,0.3)]');
+            }
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- MODAL LOGIC ---
+        function openModal(product) {
+            document.getElementById('modal-emoji').innerText = product.emoji;
+            document.getElementById('modal-name').innerText = product.name;
+            document.getElementById('modal-inr').innerText = '₹' + product.priceINR;
+            document.getElementById('modal-usd').innerText = '/ $' + product.priceUSD.toFixed(2);
+            document.getElementById('purchase-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling behind modal
+        }
+
+        function closeModal() {
+            document.getElementById('purchase-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- API & UTILS ---
+        
+        // Fetch Live Player Count
+        fetch('https://api.mcstatus.io/v2/status/java/play.swiftmc.fun')
+            .then(response => response.json())
+            .then(data => {
+                const countElem = document.getElementById('player-count');
+                if (data.online) {
+                    countElem.innerText = data.players.online;
+                } else {
+                    countElem.innerText = 'Offline';
+                    countElem.classList.replace('text-cyan-400', 'text-red-400');
+                }
+            })
+            .catch(() => {
+                document.getElementById('player-count').innerText = 'Error';
+            });
+
+        // Copy IP
+        function copyIP() {
+            const ip = 'play.swiftmc.fun';
+            navigator.clipboard.writeText(ip).then(() => {
+                const icon = document.getElementById('copy-icon');
+                icon.className = 'fa-solid fa-check text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.8)] text-xl';
+                setTimeout(() => {
+                    icon.className = 'fa-regular fa-copy text-cyan-400 group-hover:scale-110 transition-transform drop-shadow-[0_0_5px_rgba(6,182,212,0.3)]';
+                }, 2000);
+            }).catch(err => {
+                // Fallback for older browsers or iframes without clipboard perm
+                const textarea = document.createElement('textarea');
+                textarea.value = ip;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                const icon = document.getElementById('copy-icon');
+                icon.className = 'fa-solid fa-check text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.8)] text-xl';
+                setTimeout(() => {
+                    icon.className = 'fa-regular fa-copy text-cyan-400 group-hover:scale-110 transition-transform drop-shadow-[0_0_5px_rgba(6,182,212,0.3)]';
+                }, 2000);
+            });
+        }
+
+        // Set dynamic year in footer
+        document.getElementById('year').innerText = new Date().getFullYear();
+    </script>
+</body>
+</html>
